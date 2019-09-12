@@ -11,15 +11,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/CurrencyExchange$testing.coverage" NAME="testing Coverage Results" MODIFIED="1568279896849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/qtGUI" />
+    <SUITE FILE_PATH="coverage/CurrencyExchange$testing.coverage" NAME="testing Coverage Results" MODIFIED="1568280468721" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/qtGUI" />
   </component>
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/qtGUI/testing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="169" column="98" selection-start-line="169" selection-start-column="98" selection-end-line="169" selection-end-column="98" />
+            <state relative-caret-position="450">
+              <caret line="30" column="83" selection-start-line="30" selection-start-column="83" selection-end-line="30" selection-end-column="83" />
               <folding>
                 <element signature="e#72#81#0" expanded="true" />
               </folding>
@@ -155,12 +155,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1568155334927</updated>
-      <workItem from="1568155338217" duration="13084000" />
+      <workItem from="1568155338217" duration="13553000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13084000" />
+    <option name="totallyTimeSpent" value="13553000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="24" width="1680" height="1027" extended-state="6" />
@@ -240,8 +240,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/qtGUI/testing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="169" column="98" selection-start-line="169" selection-start-column="98" selection-end-line="169" selection-end-column="98" />
+        <state relative-caret-position="450">
+          <caret line="30" column="83" selection-start-line="30" selection-start-column="83" selection-end-line="30" selection-end-column="83" />
           <folding>
             <element signature="e#72#81#0" expanded="true" />
           </folding>
