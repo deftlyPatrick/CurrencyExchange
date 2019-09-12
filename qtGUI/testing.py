@@ -19,7 +19,8 @@ class CurrencyConverter:
         self.currency_name = {}
         self.currency_symbol = {}
         self.currency_abv = []
-
+        self.money_holding = 0
+        self.total_exchange = []
 
         self.from_country = ""
         self.to_country = ""
@@ -28,11 +29,10 @@ class CurrencyConverter:
         self.input_website()
         self.final_website = self.print_website(self.from_country, self.to_country)
         # print("self.currency_name: ", self.currency_name)
-
+        print("currency_symbol: ", self.currency_symbol)
         self.check_website()
         self.print_currency_rate_today()
-
-        self.calculate_exchange_rate()
+        self.print_exchanging()
 
     def sort_currency(self):
         for k, dk in self.data.items():
@@ -96,7 +96,7 @@ class CurrencyConverter:
             print("Error: Invalid Command, Please try again. ")
             while (temp == ""):
                 temp = input("Do you know what currency you are exchanging to? Y/N ")
-        elif (temp == "yes" or temp == "y"):
+        elif not (temp == "yes" or temp == "y"):
             while not (temp == "yes" or temp == "y"):
                 print("Here is a list of all available currencies: ")
                 for abb, currency in self.currency_name.items():
@@ -139,26 +139,79 @@ class CurrencyConverter:
         if resp == 200:
             # print("Response Code: ", resp)
             req = urllib.request.Request(self.final_website)
-            self.data = urllib.request.urlopen(req).read()
-            self.data = json.loads(self.data.decode('utf-8'))
-            print(self.data)
-            from_to = list(self.data.values())
+            data = urllib.request.urlopen(req).read()
+            data = json.loads(data.decode('utf-8'))
+            from_to = list(data.values())
             print("Today's exchange rate for %s to %s is %f" % (self.from_country, self.to_country, from_to[0]))
         else:
             print("self.final_website: ", self.final_website)
             print("Response Code:", resp)
             print("Error website loading")
 
-    #
-    def calculate_exchange_rate(self):
 
+    def print_exchanging(self):
         for key in self.currency_name.keys():
             if key == self.from_country:
-                temp = self.currency_name[self.from_country]
+                currency_name = self.currency_name[self.from_country]
 
-        print("temp: ", temp)
-        # return_amount = input("How much %s are you trying to exchange?", temp)
+
+        for key in self.currency_symbol.keys():
+            if key == self.from_country:
+                symbol = self.currency_symbol[self.from_country]
+
+        # print("temp: ", temp)
+        currency_name = currency_name.split()
+        new_word = ""
+        if ((currency_name[-1][len(currency_name[-1]) - 1:]) == ")"):
+            new_word = currency_name[-1].replace(")", "")
+            # print("new_word: ", new_word)
+            self.money_holding = input("How many %s are you trying to exchange? " %(new_word.lower()))
+        else:
+            self.money_holding = input("How many %s are you trying to exchange? " % (currency_name[-1].lower()))
         # print("return_amount: ", return_amount)
+        money_exchanged_from_country = self.calculate_exchange_rate_from_country(self.money_holding)
+        money_exchanged_to_country = self.calculate_exchange_rate_to_country(self.money_holding)
+
+        print("The money you exchange is %s to %s and you have received %s%s%.2f" %(self.from_country,
+                                                                                 self.to_country,
+                                                                                  symbol,
+                                                                                 new_word.lower(),
+                                                                                 money_exchanged_from_country))
+
+    def calculate_exchange_rate_from_country(self, money_holding):
+
+        resp = self.check_website()
+
+        money_from_to = 0
+
+        if resp == 200:
+            req = urllib.request.Request(self.final_website)
+            data = urllib.request.urlopen(req).read()
+            data = json.loads(data.decode('utf-8'))
+            currency_today = list(data.values())
+            money_from_to = (currency_today[0] * float(money_holding))
+        else:
+            print("Error Response: ", resp)
+
+        return money_from_to
+
+    def calculate_exchange_rate_to_country(self, money_holding):
+
+        resp = self.check_website()
+
+        if resp == 200:
+            req = urllib.request.Request(self.final_website)
+            data = urllib.request.urlopen(req).read()
+            data = json.loads(data.decode('utf-8'))
+            currency_today = list(data.values())
+            money_to_from = (currency_today[1] * float(money_holding))
+        else:
+            print("Error Response: ", resp)
+
+        return money_to_from
+
+
+
 
 
 a = CurrencyConverter()
