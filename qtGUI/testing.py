@@ -5,13 +5,13 @@ import urllib.request
 import httplib2
 import json
 import sys
-import pprint
-import pandas as pd
+import platform
 
 
 class CurrencyConverter:
 
     def __init__(self):
+        self.system = str(platform.system()).lower()
         req = urllib.request.Request("https://free.currconv.com/api/v7/currencies?apiKey=0348799f934010f56f8b")
         from_currency = "https://free.currconv.com/api/v7/convert?q="
         to_currency = "&compact=ultra&apiKey=0348799f934010f56f8b"
@@ -85,22 +85,22 @@ class CurrencyConverter:
     def input_website(self):
         # Example : "https://free.currconv.com/api/v7/convert?q=USD_PHP,PHP_USD&compact=ultra&apiKey=0348799f934010f56f8b"
 
-        temp = input("Do you know what currency you are exchanging to? Y/N ")
+        temp = input("Do you know what currency you are exchanging to? Y/N \n")
         temp = temp.lower()
 
         if temp == "":
-            print("Error: Invalid Command, Please try again. ")
+            print("Error: Invalid Command, Please try again. \n")
             while (temp == ""):
-                temp = input("Do you know what currency you are exchanging to? Y/N ")
+                temp = input("Do you know what currency you are exchanging to? Y/N \n")
         elif not (temp == "yes" or temp == "y"):
             while not (temp == "yes" or temp == "y"):
-                print("Here is a list of all available currencies: ")
+                print("Here is a list of all available currencies: \n")
                 for abb, currency in self.currency_name.items():
                     print("{} ({})".format(abb, currency))
-                temp = input("Do you know what currency you want to exchange to now? ")
+                temp = input("Do you know what currency you want to exchange to now? \n")
 
-        self.to_country = input("What currency do you want to exchange to? ")
-        self.from_country = input("What currency do you currently own? ")
+        self.to_country = input("What currency do you want to exchange to? \n")
+        self.from_country = input("What currency do you currently own? \n")
 
         self.to_country = self.to_country.upper()
         self.from_country = self.from_country.upper()
@@ -108,8 +108,8 @@ class CurrencyConverter:
         if not (self.to_country in self.currency_abv and self.from_country in self.currency_abv):
             while not (self.to_country in self.currency_abv and self.from_country in self.currency_abv):
                 print("This is not a valid currency. Please try again. \n")
-                self.to_country = input("What currency do you want to exchange to? ")
-                self.from_country = input("What currency do you currently own? ")
+                self.to_country = input("What currency do you want to exchange to? \n")
+                self.from_country = input("What currency do you currently own? \n")
 
                 self.to_country = self.to_country.upper()
                 self.from_country = self.from_country.upper()
@@ -136,11 +136,15 @@ class CurrencyConverter:
             data = urllib.request.urlopen(req).read()
             data = json.loads(data.decode('utf-8'))
             from_to = list(data.values())
-            print("Today's exchange rate for %s to %s is %f" % (self.from_country, self.to_country, from_to[0]))
+            if (self.system == "linux" or self.system == "darwin"):
+                os.system("clear")
+            else:
+                os.system("cls")
+            print( "Today's exchange rate for %s to %s is %.2f\n" % (self.from_country, self.to_country, from_to[0]))
         else:
-            print("self.final_website: ", self.final_website)
-            print("Response Code:", resp)
-            print("Error website loading")
+            print("self.final_website: \n\n", self.final_website)
+            print("Response Code: \n", resp)
+            print("Error website loading. \n")
 
     def print_exchanging(self):
         for key in self.currency_name.keys():
@@ -158,26 +162,39 @@ class CurrencyConverter:
         if ((currency_name[-1][len(currency_name[-1]) - 1:]) == ")"):
             new_word = currency_name[-1].replace(")", "")
             # print("new_word: ", new_word)
-            self.money_holding = input("How many %s are you trying to exchange? " % (new_word.lower()))
+            while True:
+                try:
+                    self.money_holding = float(input("How many %s are you trying to exchange? \n" % (new_word.lower())))
+                except ValueError:
+                    print("This is invalid amount of money. Please the amount of money that you currently hold right now.")
+                else:
+                    break
+
+
         else:
-            self.money_holding = input("How many %s are you trying to exchange? " % (currency_name[-1].lower()))
-        # print("return_amount: ", return_amount)
+            while True:
+                try:
+                    self.money_holding = float(input("How many %s are you trying to exchange? \n" % (currency_name[-1].lower())))
+                except ValueError:
+                    print("This is invalid amount of money. Please the amount of money that you currently hold right now. \n")
+                else:
+                    break
+
+
         money_exchanged_from_country = self.calculate_exchange_rate_from_country(self.money_holding)
         money_exchanged_to_country = self.calculate_exchange_rate_to_country(self.money_holding)
 
-        print("The money you exchange is %s to %s and you have received %s%s%.2f " % (self.from_country,
+        print("The money you exchange is %s to %s and you have received %s%.2f \n" % (self.from_country,
                                                                                       self.to_country,
                                                                                       symbol_from,
-                                                                                      new_word.lower(),
                                                                                       money_exchanged_from_country))
 
-        temp = input("Do you want to know the exchange for %s to %s? Y/N " % (self.to_country, self.from_country))
+        temp = input("Do you want to know the exchange for %s to %s? Y/N \n" % (self.to_country, self.from_country))
         temp = temp.lower()
         if (temp == "y" or temp == "yes"):
-            print("The money exchanged for %s to %s and you have received %s%s%.2f" % (self.to_country,
+            print("The money exchanged for %s to %s and you have received %s%.2f \n" % (self.to_country,
                                                                                        self.from_country,
                                                                                        symbol_to,
-                                                                                       new_word.lower(),
                                                                                        money_exchanged_to_country))
         else:
             sys.exit()
