@@ -6,6 +6,7 @@ import httplib2
 import json
 import sys
 import platform
+import pprint
 
 
 class CurrencyConverter:
@@ -51,41 +52,33 @@ class CurrencyConverter:
 
     def sort_currency(self):
         for k, dk in self.data.items():
-            # print(k)
             for i, di in dk.items():
-                # print(di)
                 self.currency_abv.append(i)
                 temp_name = di['currencyName'].split()
                 temp_word = temp_name[-1]
-                # print(temp_word)
-                if (temp_name[-1][len(temp_name[-1]) - 1:]) == ")":
+                if (temp_name[-1] == "Rights"):
+                    temp_name[-1] = temp_name[-1].replace("Rights", "")
+                    temp_name[-1] += "Rights"
+                elif (temp_name[-1][len(temp_name[-1]) - 1:]) == ")":
                     temp_name[-1] = temp_name[-1].replace(")", "")
                     temp_name[-1] += "s)"
                     temp_str = temp_name[-1]
-                    # print(temp_str)
+                    di['currencyName'] = di['currencyName'].replace(temp_word, temp_str)
                 else:
                     temp_name[-1] += "s"
                     temp_str = temp_name[-1]
-                    # print("temp_str: ", temp_str)
-                    # print("temp_name[-1]: ", temp_name[-1])
+                    di['currencyName'] = di['currencyName'].replace(temp_word, temp_str)
 
-                di['currencyName'] = di['currencyName'].replace(temp_word, temp_str)
                 self.currency_name[i] = di['currencyName']
 
-                # print("self.currency_name[i]: ", self.currency_name[i])
                 if 'currencySymbol' in di:
                     self.currency_symbol[i] = di['currencySymbol']
-                    # print("self.currency_symbol[i]: ", self.currency_symbol[i])
                 else:
                     temp_words = di['currencyName'].split()
-                    if (temp_words[-1][len(temp_words[-1]) - 1:]) == ")":
-                        temp_words[-1] = temp_words[-1].replace(")", "")
-                        temp_words[-1] += "s"
-                    else:
+                    if (temp_words[-1][len(temp_words[-1]) - 2:]) == "s)":
+                        temp_words[-1] = temp_words[-1].replace("s)", "")
                         temp_words[-1] += "s"
                     self.currency_symbol[i] = temp_words[-1]
-                    # print("self.currency_symbol[i]: ",  self.currency_symbol[i])
-        # pprint.pprint(self.currency_name)
 
     def print_website(self, from_country, to_country):
         from_currency = "https://free.currconv.com/api/v7/convert?q="
@@ -113,7 +106,7 @@ class CurrencyConverter:
                     print("{} ({})".format(abb, currency))
                 temp = input("Do you know what currency you want to exchange to now? \n")
 
-        self.to_country = input("What currency do you want to exchange to? \n")
+        self.to_country = input("What currency do you want to exchange to? Type in the country abbreviation.  \n")
         self.from_country = input("What currency do you currently own? \n")
 
         self.to_country = self.to_country.upper()
@@ -122,7 +115,7 @@ class CurrencyConverter:
         if not (self.to_country in self.currency_abv and self.from_country in self.currency_abv):
             while not (self.to_country in self.currency_abv and self.from_country in self.currency_abv):
                 print("This is not a valid currency. Please try again. \n")
-                self.to_country = input("What currency do you want to exchange to? \n")
+                self.to_country = input("What currency do you want to exchange to? Type in the country abbreviation. \n")
                 self.from_country = input("What currency do you currently own? \n")
 
                 self.to_country = self.to_country.upper()
@@ -181,32 +174,45 @@ class CurrencyConverter:
 
         money_exchanged_from_country = self.calculate_exchange_rate_from_country(self.money_holding)
         money_exchanged_to_country = self.calculate_exchange_rate_to_country(self.money_holding)
+        print("len(symbol_from): ", len(symbol_from))
+        if (len(symbol_from) < 2):
+            print("The money you exchange is %s to %s and you have received %s%.2f \n" % (self.from_country,
+                                                                                          self.to_country,
+                                                                                          symbol_from,
+                                                                                          money_exchanged_from_country))
+        else:
+            print("The money you exchange is %s to %s and you have received %.2f %s \n" % (self.from_country,
+                                                                                          self.to_country,
+                                                                                          money_exchanged_from_country,
+                                                                                          symbol_from,))
 
-        print("The money you exchange is %s to %s and you have received %s%.2f \n" % (self.from_country,
-                                                                                      self.to_country,
-                                                                                      symbol_from,
-                                                                                      money_exchanged_from_country))
 
         temp = input("Do you want to know the exchange for %s to %s? Y/N \n" % (self.to_country, self.from_country))
         temp = temp.lower()
         if (temp == "y" or temp == "yes"):
-            print("The money exchanged for %s to %s and you have received %s%.2f \n" % (self.to_country,
-                                                                                        self.from_country,
-                                                                                        symbol_to,
-                                                                                        money_exchanged_to_country))
+            print("len(symbol_to): ", len(symbol_to))
+            if (len(symbol_to) < 2):
+                print("The money exchanged for %s to %s and you have received %s%.2f \n" % (self.to_country,
+                                                                                            self.from_country,
+                                                                                            symbol_to,
+                                                                                            money_exchanged_to_country))
+            else:
+                print("The money exchanged for %s to %s and you have received %.2f %s \n" % (self.to_country,
+                                                                                            self.from_country,
+                                                                                            money_exchanged_to_country,
+                                                                                            symbol_to))
+
         else:
             sys.exit()
 
     def calculate_exchange_rate_from_country(self, money_holding):
 
         money_from_to = (self.currency_today[0] * float(money_holding))
-
         return money_from_to
 
     def calculate_exchange_rate_to_country(self, money_holding):
 
         money_to_from = (self.currency_today[1] * float(money_holding))
-
         return money_to_from
 
 
